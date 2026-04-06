@@ -280,7 +280,9 @@ function generateOrderReport(orders) {
     paidOrders: filterOrdersByStatus(orders, true).length,
     unpaidOrders: filterOrdersByStatus(orders, false).length,
     totalRevenue: calculateTotalRevenue(orders),
-    averageOrderValue: Math.round(orders.reduce((s, c) => s + c.total) / 2),
+    averageOrderValue: Math.round(
+      orders.reduce((s, c) => s + c.total) / orders.length,
+    ),
   };
 }
 
