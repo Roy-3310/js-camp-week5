@@ -235,8 +235,7 @@ function removeFromCart(carts, cartId) {
  * @returns {Array} - 回傳空陣列
  */
 function clearCart() {
-  carts.length = 0;
-  return carts;
+  return [];
 }
 
 // ========================================
@@ -281,7 +280,7 @@ function generateOrderReport(orders) {
     unpaidOrders: filterOrdersByStatus(orders, false).length,
     totalRevenue: calculateTotalRevenue(orders),
     averageOrderValue: Math.round(
-      orders.reduce((s, c) => s + c.total) / orders.length,
+      orders.reduce((s, c) => s + c.total, 0) / orders.length,
     ),
   };
 }
@@ -296,12 +295,14 @@ function generateOrderReport(orders) {
  * }
  */
 function groupOrdersByPayment(orders) {
-  return {
-    ATM: orders.filter((order) => order.user.payment === "ATM"),
-    "Credit Card": orders.filter(
-      (order) => order.user.payment === "Credit Card",
-    ),
-  };
+  return orders.reduce((grouped, order) => {
+    const paymentMethod = order.user.payment;
+    if (!grouped[paymentMethod]) {
+      grouped[paymentMethod] = [];
+    }
+    grouped[paymentMethod].push(order);
+    return grouped;
+  }, {});
 }
 
 // ========================================
